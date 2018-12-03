@@ -1,4 +1,5 @@
 <?php
+/**codigo para borrar disco **/
     if($_GET){
         $disco=$_GET['disco'];
         $discografia = new PDO('mysql:host=localhost;dbname=discografia', 'root', '');
