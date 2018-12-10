@@ -5,18 +5,22 @@
         <title>Discos</title>
         <style>
             table{
+                text-align: center;
                 margin: 30px auto auto;
                 border: 1px solid black;
                 border-collapse: collapse;
             }
             td{
-                text-align: center;
                 padding: 2px;
                 border: 1px solid black;
             }
             div{
                 text-align: center;
                 margin-top: 20px;
+            }
+            a:link{
+                margin-right: 30px;
+                margin-right: 30px;
             }
         </style>
     </head>
@@ -46,7 +50,9 @@
 
         </table>
         <div>
+            <a href="disconuevo.php">Crear un disco</a>
             <a href="cancionnueva.php">Crear Una Cancion</a>
+            <a href="canciones.php">Buscar Cancion</a>
         </div>
     </body>
 </html>

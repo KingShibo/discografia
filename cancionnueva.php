@@ -27,7 +27,7 @@
             }else{
                 $titulo = $_POST["titulo"];
                 if(!preg_match("/^[a-zA-Z ]*$/",$titulo)){
-                    
+
                     echo $error;    
                     $errorTitulo="No se admiten caracteres especiales";
                     $error=true;
@@ -73,7 +73,7 @@
     <body>
         <h1>Crear Cancion</h1>
         <form action="#" method="post">
-        <label for="titulo">Titulo: </label><input type="text" name="titulo" id="titulo"><br>
+            <label for="titulo">Titulo: </label><input type="text" name="titulo" id="titulo"><br>
             <label for="album">Album: </label>
             <select name="album">
                 <?php

@@ -20,6 +20,17 @@
                 width: 30px;
             }
         </style>
+        <?php
+        if($_POST){
+            if(!empty($_COOKIE['canciones'])){
+                $cantidad=sizeof($_COOKIE['canciones']);
+                setcookie("canciones[$cantidad]",$_POST['buscar'],time()+60);
+                
+            }else{
+                setcookie("canciones[0]",$_POST['buscar'],time()+60);
+            }
+        }
+        ?>
     </head>
     <body>
         <h1>Buscar Cancion</h1>
@@ -30,58 +41,67 @@
             Nombre de álbum <input type="radio" name="forma" value="ambos">Ambos campos<br>
             Género Musical:
             <select name="genero">
-            <?php
-            $discografia = new PDO('mysql:host=localhost;dbname=discografia', 'root', '');
-            $consulta=$discografia->query("SHOW COLUMNS FROM cancion Like 'Genero'");
-            $resultado=$consulta->fetch();
-            $generos=$resultado['Type'];
-            $genero= explode(',',$generos);
-            $genero=str_replace("enum(","",$genero);
-            $genero= str_replace(")","",$genero);
-            $genero= str_replace("'","",$genero);
-            foreach($genero as $value){
-                echo '<option value="'.$value.'">'.$value.'</option>';
-            }
-            ?>
+                <?php
+                $discografia = new PDO('mysql:host=localhost;dbname=discografia', 'root', '');
+                $consulta=$discografia->query("SHOW COLUMNS FROM cancion Like 'Genero'");
+                $resultado=$consulta->fetch();
+                $generos=$resultado['Type'];
+                $genero= explode(',',$generos);
+                $genero=str_replace("enum(","",$genero);
+                $genero= str_replace(")","",$genero);
+                $genero= str_replace("'","",$genero);
+                foreach($genero as $value){
+                    echo '<option value="'.$value.'">'.$value.'</option>';
+                }
+                ?>
             </select><br>
             <button type="submit">Buscar Cancion</button>
         </form>
-        
+
         <?php
-            if($_POST){
-                $textoTitulo='';
-                $textoAlbum='';
-                $genero=$_POST['genero'];
-                if($_POST['forma']=='cancion'){
-                    $textoTitulo=$_POST['buscar'];
-                }else if($_POST['forma']=='album'){
-                    $textoAlbum=$_POST['buscar'];
-                }else{
-                    $textoTitulo=$_POST['buscar'];
-                    $textoAlbum=$_POST['buscar'];
-                }
-                $discografia = new PDO('mysql:host=localhost;dbname=discografia', 'root', '');
-                $consulta=$discografia->prepare("SELECT DISTINCT C.Titulo,A.Titulo as Album,C.Posicion,C.Duracion,C.Genero FROM cancion C,album A WHERE C.Genero=? AND A.Codigo=C.Album AND C.Titulo=? || A.Titulo=?");
-                $consulta->bindParam(1,$genero);
-                $consulta->bindParam(2,$textoTitulo);
-                $consulta->bindParam(3,$textoAlbum);
-                $consulta->execute();
-                echo '<table>';
-                echo '<tr><th>Titulo</th>';
-                echo '<th>Album</th>';
-                echo '<th>Posicion</th>';
-                echo '<th>Duracion</th>';
-                echo '<th>Genero</th></tr>';
-                while($resultado=$consulta->fetch(PDO::FETCH_ASSOC)){
-                    echo '<tr><td>'.$resultado['Titulo'].'</td>';
-                    echo '<td>'.$resultado['Album'].'</td>';
-                    echo '<td>'.$resultado['Posicion'].'</td>';
-                    echo '<td>'.$resultado['Duracion'].'</td>';
-                    echo '<td>'.$resultado['Album'].'</td>';
-                }
-                echo '</table>';
+        if($_POST){
+            $textoTitulo='';
+            $textoAlbum='';
+            $genero=$_POST['genero'];
+            if($_POST['forma']=='cancion'){
+                $textoTitulo=$_POST['buscar'];
+            }else if($_POST['forma']=='album'){
+                $textoAlbum=$_POST['buscar'];
+            }else{
+                $textoTitulo=$_POST['buscar'];
+                $textoAlbum=$_POST['buscar'];
             }
+            $discografia = new PDO('mysql:host=localhost;dbname=discografia', 'root', '');
+            $consulta=$discografia->prepare("SELECT DISTINCT C.Titulo,A.Titulo as Album,C.Posicion,C.Duracion,C.Genero FROM cancion C,album A WHERE C.Genero=? AND A.Codigo=C.Album AND C.Titulo=? || A.Titulo=?");
+            $consulta->bindParam(1,$genero);
+            $consulta->bindParam(2,$textoTitulo);
+            $consulta->bindParam(3,$textoAlbum);
+            $consulta->execute();
+            echo '<table>';
+            echo '<tr><th>Titulo</th>';
+            echo '<th>Album</th>';
+            echo '<th>Posicion</th>';
+            echo '<th>Duracion</th>';
+            echo '<th>Genero</th></tr>';
+            while($resultado=$consulta->fetch(PDO::FETCH_ASSOC)){
+                echo '<tr><td>'.$resultado['Titulo'].'</td>';
+                echo '<td>'.$resultado['Album'].'</td>';
+                echo '<td>'.$resultado['Posicion'].'</td>';
+                echo '<td>'.$resultado['Duracion'].'</td>';
+                echo '<td>'.$resultado['Genero'].'</td>';
+            }
+            echo '</table><br>';
+            
+            if(!empty($_COOKIE['canciones'])){
+                echo "Ultimas canciones buscadas<br>";
+                foreach($_COOKIE['canciones'] as $valor){
+                    echo 'Canciones: '.$valor.'<br>';
+                }
+            }
+        }
+
+
         ?>
-        
+
     </body>
 </html>
